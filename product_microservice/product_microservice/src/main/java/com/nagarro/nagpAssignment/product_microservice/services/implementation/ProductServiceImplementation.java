@@ -64,7 +64,8 @@ public class ProductServiceImplementation implements ProductService {
 
 	@Override
 	public int getProductAvailability(int productId, int quantity) {
-
+		Product pr = new Product(1, "Beauty Product", 100, 1, 2);
+		inventory.add(pr);
 		for (Product p : inventory) {
 			if (p.getId() == productId) {
 				if (p.getQuantity() >= quantity) {
