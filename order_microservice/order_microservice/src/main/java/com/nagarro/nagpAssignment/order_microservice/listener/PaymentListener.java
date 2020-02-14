@@ -7,6 +7,7 @@ import org.springframework.integration.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 import com.nagarro.nagpAssignment.order_microservice.Controller.OrderCreatedSource;
+import com.nagarro.nagpAssignment.order_microservice.Status.PaymentStatus;
 import com.nagarro.nagpAssignment.order_microservice.model.Order;
 import com.nagarro.nagpAssignment.order_microservice.service.OrderProductService;
 
@@ -23,10 +24,10 @@ public class PaymentListener {
 	public void orederPaymentStatus(Order order) {
 		System.out.println("****On listening from output stream****");
 		System.out.println(order.toString());
-		
+
 		orderProductService.changePaymentStatus(order.getOrder_id(), order.getPayment_status());
-		
-		orderCreatedSource.updateDelivery().send(MessageBuilder.withPayload(order).build());
+		if (order.getPayment_status().equals(PaymentStatus.PAYMENT_DONE.name()))
+			orderCreatedSource.updateDelivery().send(MessageBuilder.withPayload(order).build());
 
 	}
 }

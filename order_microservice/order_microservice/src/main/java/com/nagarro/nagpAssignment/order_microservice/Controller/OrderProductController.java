@@ -70,6 +70,11 @@ public class OrderProductController {
 		}
 	}
 
+	@GetMapping("/getAllOrders")
+	public String checker() {
+
+		return "true";
+	}
 	// @PostMapping("/{user_id}/order/product/{product_id}/quantity/{quantity}")
 
 //	@GetMapping("/product/{product_id}/quantity/{quantity}")

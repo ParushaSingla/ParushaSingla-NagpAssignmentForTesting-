@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nagarro.nagpAssignment.product_microservice.exception.RecordNotFoundException;
 import com.nagarro.nagpAssignment.product_microservice.model.Product;
 import com.nagarro.nagpAssignment.product_microservice.service.ProductService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 
 @RestController
 @RequestMapping(value = "products/customer")
@@ -38,6 +40,8 @@ public class CustomerController {
 		}
 	}
 
+	@HystrixCommand(fallbackMethod = "fallback_method", commandProperties = {
+			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "1000") })
 	@GetMapping("/getProductAvailability/{productId}/quantity/{quantity}")
 	public int getProductAvailability(@PathVariable int productId, @PathVariable int quantity) {
 		return productService.getProductAvailability(productId, quantity);
@@ -55,6 +59,10 @@ public class CustomerController {
 	public void removeProductFromCart(@PathVariable int productId) {
 		Product product = getProductById(productId);
 		productService.removeProductFromCart(product);
+	}
+
+	private int fallback_method(int productId, int quantity) {
+		return 0;
 	}
 
 }
