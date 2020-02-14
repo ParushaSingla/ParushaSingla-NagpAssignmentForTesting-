@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.integration.support.MessageBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,20 +31,15 @@ public class OrderProductController {
 	@Autowired
 	CurrencyExchangeServiceProxy proxy;
 
-	@Autowired
-	OrderCreatedSource orderCreatedSource;
-
 	@PostMapping("/createOrder")
-	public String orderFood(@Valid @RequestBody Order newOrder) {
+	public String createOrder(@Valid @RequestBody Order newOrder) {
 //		System.out.println(newOrder.toString());
 //		return new ResponseEntity(newOrder, HttpStatus.OK);
-		int price = proxy.getProductAvailability(newOrder.getProduct_id(), newOrder.getQuantity());
+		int price = proxy.getProductAvailability(newOrder.getProductId(), newOrder.getQuantity());
 		if (price > 0) {
-			newOrder.setTotal_bill(newOrder.getQuantity() * price);
+			newOrder.setTotalBill(newOrder.getQuantity() * price);
 			Order order = orderProductService.orderAProduct(newOrder);
-			orderCreatedSource.employeeRegistration().send(MessageBuilder.withPayload(order).build());
-			System.out.println("IN ORDER");
-			System.out.println(order.toString());
+			orderProductService.sendForPayment(order);
 			return "order submitted";
 		} else {
 			throw new RecordNotFoundException("Product is out of stock");

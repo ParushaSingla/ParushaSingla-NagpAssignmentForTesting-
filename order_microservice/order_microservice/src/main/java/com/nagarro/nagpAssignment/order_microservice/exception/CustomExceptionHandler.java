@@ -2,16 +2,24 @@ package com.nagarro.nagpAssignment.order_microservice.exception;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings({ "unchecked", "rawtypes" })
 @ControllerAdvice
@@ -22,6 +30,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		details.add(ex.getLocalizedMessage());
 		ErrorResponse error = new ErrorResponse("Server Error", details);
 		return new ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
+	@ExceptionHandler(BindException.class)
+	public final ResponseEntity<Object> validationExceptionHandler(BindException ex, HttpServletRequest request, HttpServletResponse response) {
+		List<String> allErrors = ex.getAllErrors().stream().map(e -> e.getDefaultMessage()).collect(Collectors.toList());
+		ErrorResponse error = new ErrorResponse("Validation exception", allErrors);
+		return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(RecordNotFoundException.class)

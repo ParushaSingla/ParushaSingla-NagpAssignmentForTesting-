@@ -24,7 +24,7 @@ public class PaymentListener {
 		System.out.println("****On listening from output stream****");
 		System.out.println(order.toString());
 		
-		orderProductService.changePaymentStatus(order.getOrder_id(), order.getPayment_status());
+		orderProductService.changePaymentStatus(order.getOrderId(), order.getPaymentStatus());
 		
 		orderCreatedSource.updateDelivery().send(MessageBuilder.withPayload(order).build());
 

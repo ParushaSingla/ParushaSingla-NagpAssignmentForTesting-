@@ -6,16 +6,16 @@ import com.nagarro.nagpAssignment.order_microservice.model.Order;
 
 public interface OrderProductService {
 
-	
 
-	List<Order> getAllOrderOfUser(int user_id);
+    List<Order> getAllOrderOfUser(int userId);
 
-	Order orderAProduct(Order order);
+    Order orderAProduct(Order order);
 
-	Order changePaymentStatus(int order_id, String payment_status);
+    void sendForPayment(Order order);
 
-	Order changeDeliveryStatus(int order_id, String delivery_status);
-	
-	
+    Order changePaymentStatus(int orderId, String paymentStatus);
+
+    Order changeDeliveryStatus(int orderId, String deliveryStatus);
+
 
 }
