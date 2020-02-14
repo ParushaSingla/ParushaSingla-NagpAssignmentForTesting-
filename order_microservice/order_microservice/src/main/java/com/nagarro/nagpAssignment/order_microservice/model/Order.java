@@ -1,40 +1,54 @@
 package com.nagarro.nagpAssignment.order_microservice.model;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nagarro.nagpAssignment.order_microservice.Status.DeliveryStatus;
 import com.nagarro.nagpAssignment.order_microservice.Status.PaymentStatus;
 
-public class Order {
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
-	private int order_id;
+public class Order implements Serializable {
+
+	@JsonProperty("order_id")
+	@NotNull
+	private int orderId;
 	@Min(1)
-	private int user_id;
+	@NotNull
+	@JsonProperty("user_id")
+	private int userId;
 	@Min(1)
-	private int product_id;
+	@JsonProperty("product_id")
+	private int productId;
 	@Min(1)
+	@NotNull
+	@Digits(fraction = 10, integer = 10, message ="Not a number")
 	private int quantity;
-	private int total_bill;
-	private String delivery_status;
-	private String payment_status;
+	@JsonProperty("total_bill")
+	@Digits(fraction = 10, integer = 10, message ="Not a number")
+	private int totalBill;
+	@JsonProperty("delivery_status")
+	private String deliveryStatus;
+	@JsonProperty("payment_status")
+	private String paymentStatus;
 
 	public Order() {
 	}
 
-	public Order(int order_id, int user_id, int product_id, int quantity, int total_bill) {
-		this.order_id = order_id;
-		this.user_id = user_id;
-		this.product_id = product_id;
-		this.setPayment_status(PaymentStatus.PAYMENT_PENDING.name());
-		this.setDelivery_status(DeliveryStatus.UNDELIVERED.name());
+	public Order(int order_id, int user_id, int product_id, int quantity, int totalBill) {
+		this.orderId = order_id;
+		this.userId = user_id;
+		this.productId = product_id;
+		this.setPaymentStatus(PaymentStatus.PAYMENT_PENDING.name());
+		this.setDeliveryStatus(DeliveryStatus.UNDELIVERED.name());
 	}
 
 	@Override
 	public String toString() {
-		return "Order [order_id=" + order_id + ", user_id=" + user_id + ", product_id=" + product_id + ", quantity="
-				+ quantity + ", total_bill=" + total_bill + ", delivery_status=" + delivery_status + ", payment_status="
-				+ payment_status + "]";
+		return "Order [order_id=" + orderId + ", user_id=" + userId + ", product_id=" + productId + ", quantity="
+				+ quantity + ", total_bill=" + totalBill + ", delivery_status=" + deliveryStatus + ", payment_status="
+				+ paymentStatus + "]";
 	}
 
 	public int getQuantity() {
@@ -45,59 +59,59 @@ public class Order {
 		this.quantity = quantity;
 	}
 
-	public String getDelivery_status() {
-		return delivery_status;
+	public String getDeliveryStatus() {
+		return deliveryStatus;
 	}
 
-	public void setDelivery_status(String delivery_status) {
-		this.delivery_status = delivery_status;
+	public void setDeliveryStatus(String deliveryStatus) {
+		this.deliveryStatus = deliveryStatus;
 	}
 
-	public String getPayment_status() {
-		return payment_status;
+	public String getPaymentStatus() {
+		return paymentStatus;
 	}
 
-	public void setPayment_status(String payment_status) {
+	public void setPaymentStatus(String paymentStatus) {
 
-		if (payment_status.equals(PaymentStatus.PAYMENT_DONE.name())
-				|| payment_status.equals(PaymentStatus.PAYMENT_DECLINED.name())
-				|| payment_status.equals(PaymentStatus.PAYMENT_PENDING.name())) {
-			this.payment_status = payment_status;
+		if (paymentStatus.equals(PaymentStatus.PAYMENT_DONE.name())
+				|| paymentStatus.equals(PaymentStatus.PAYMENT_DECLINED.name())
+				|| paymentStatus.equals(PaymentStatus.PAYMENT_PENDING.name())) {
+			this.paymentStatus = paymentStatus;
 		} else {
-			throw new IllegalArgumentException("Cannot set the Payment status to " + payment_status);
+			throw new IllegalArgumentException("Cannot set the Payment status to " + paymentStatus);
 		}
 	}
 
-	public int getTotal_bill() {
-		return total_bill;
+	public int getTotalBill() {
+		return totalBill;
 	}
 
-	public void setTotal_bill(int total_bill) {
-		this.total_bill = total_bill;
+	public void setTotalBill(int totalBill) {
+		this.totalBill = totalBill;
 	}
 
-	public int getProduct_id() {
-		return product_id;
+	public int getProductId() {
+		return productId;
 	}
 
-	public void setProduct_id(int product_id) {
-		this.product_id = product_id;
+	public void setProductId(int productId) {
+		this.productId = productId;
 	}
 
-	public int getOrder_id() {
-		return order_id;
+	public int getOrderId() {
+		return orderId;
 	}
 
-	public void setOrder_id(int order_id) {
-		this.order_id = order_id;
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
 	}
 
-	public int getUser_id() {
-		return user_id;
+	public int getUserId() {
+		return userId;
 	}
 
-	public void setUser_id(int user_id) {
-		this.user_id = user_id;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 
 }
