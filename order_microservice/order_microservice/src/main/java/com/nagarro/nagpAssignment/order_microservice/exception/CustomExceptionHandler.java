@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,14 +41,14 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@ExceptionHandler(RecordNotFoundException.class)
-	public final ResponseEntity<Object> handleUserNotFoundException(RecordNotFoundException ex, WebRequest request) {
+	public ResponseEntity<Object> handleUserNotFoundException(RecordNotFoundException ex, WebRequest request) {
 		List<String> details = new ArrayList<>();
 		details.add(ex.getLocalizedMessage());
 		ErrorResponse error = new ErrorResponse("Record Not Found", details);
 		return new ResponseEntity(error, HttpStatus.NOT_FOUND);
 	}
 	@ExceptionHandler(IllegalArgumentException.class)
-	public final ResponseEntity<Object> handleUserNotFoundException(IllegalArgumentException ex, WebRequest request) {
+	public ResponseEntity<Object> handleUserNotFoundException(IllegalArgumentException ex, WebRequest request) {
 		List<String> details = new ArrayList<>();
 		details.add(ex.getLocalizedMessage());
 		ErrorResponse error = new ErrorResponse("Incorrect request", details);
@@ -55,7 +56,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+	public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
 		List<String> details = new ArrayList<>();
 		for (ObjectError error : ex.getBindingResult().getAllErrors()) {
@@ -63,5 +64,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		}
 		ErrorResponse error = new ErrorResponse("Validation Failed", details);
  		return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
+	}
+
+	@Override
+	public ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+		List<String> details = new ArrayList<>();
+		details.add(ex.getMessage());
+		ErrorResponse error = new ErrorResponse("Validation Failed", details);
+		return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
 	}
 }
