@@ -32,8 +32,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity(error, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
-	@ExceptionHandler(BindException.class)
-	public final ResponseEntity<Object> validationExceptionHandler(BindException ex, HttpServletRequest request, HttpServletResponse response) {
+	@Override
+	protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
 		List<String> allErrors = ex.getAllErrors().stream().map(e -> e.getDefaultMessage()).collect(Collectors.toList());
 		ErrorResponse error = new ErrorResponse("Validation exception", allErrors);
 		return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
@@ -46,6 +46,13 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		ErrorResponse error = new ErrorResponse("Record Not Found", details);
 		return new ResponseEntity(error, HttpStatus.NOT_FOUND);
 	}
+	@ExceptionHandler(IllegalArgumentException.class)
+	public final ResponseEntity<Object> handleUserNotFoundException(IllegalArgumentException ex, WebRequest request) {
+		List<String> details = new ArrayList<>();
+		details.add(ex.getLocalizedMessage());
+		ErrorResponse error = new ErrorResponse("Incorrect request", details);
+		return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
+	}
 
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -55,6 +62,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 			details.add(error.getDefaultMessage());
 		}
 		ErrorResponse error = new ErrorResponse("Validation Failed", details);
-		return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
+ 		return new ResponseEntity(error, HttpStatus.BAD_REQUEST);
 	}
 }

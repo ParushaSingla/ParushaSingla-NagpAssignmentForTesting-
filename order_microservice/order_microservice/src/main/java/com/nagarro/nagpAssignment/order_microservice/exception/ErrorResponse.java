@@ -1,10 +1,14 @@
 package com.nagarro.nagpAssignment.order_microservice.exception;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonRootName;
+
+import java.io.Serializable;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "error")
-public class ErrorResponse {
+@JsonAutoDetect
+public class ErrorResponse implements Serializable {
 	public ErrorResponse(String message, List<String> details) {
 		super();
 		this.message = message;
