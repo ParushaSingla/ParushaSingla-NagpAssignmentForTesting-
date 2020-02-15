@@ -2,6 +2,7 @@ package com.nagarro.nagpAssignment.order_microservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -15,6 +16,7 @@ import brave.sampler.Sampler;
 @EnableEurekaClient
 @EnableFeignClients("com.nagarro.nagpAssignment.order_microservice.*")
 @EnableBinding(OrderCreatedSource.class)
+@EnableCircuitBreaker
 public class OrderMicroserviceApplication {
 
 	public static void main(String[] args) {

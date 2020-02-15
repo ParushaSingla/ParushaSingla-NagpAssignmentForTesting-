@@ -1,9 +1,7 @@
 package com.nagarro.nagpAssignment.order_microservice.listener;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.integration.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 import com.nagarro.nagpAssignment.order_microservice.Controller.OrderCreatedSource;
@@ -23,7 +21,7 @@ public class DeliveryListener {
 	public void orederPaymentStatus(Order order) {
 		System.out.println("****On listening from delivery output stream****");
 		System.out.println(order.toString());
-		orderProductService.changeDeliveryStatus(order.getOrder_id(), order.getDelivery_status());
+		orderProductService.changeDeliveryStatus(order.getOrderId(), order.getDeliveryStatus());
 
 	}
 }
